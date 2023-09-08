@@ -11,8 +11,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Project {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  authorId     String
+  title        String   @db.VarChar(100)
+  description  String   @db.VarChar(255)
+  requirements String   @db.VarChar(255)
+  suggestions  String   @db.VarChar(255)
+  additional   String?  @db.VarChar(255)
+
+  @@index([authorId])
 }
