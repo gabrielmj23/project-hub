@@ -19,7 +19,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav imageUrl={user.user.imageUrl} username={user.user.username ?? ""}/>
-      <main className="flex min-h-screen flex-col items-center justify-center">
+      <main className="flex min-h-screen flex-col items-center mt-16">
+        <h1 className="text-4xl font-bold tracking-tight text-white mb-5">
+          Browse project ideas
+        </h1>
         <ProjectsList />
       </main>
     </>
@@ -46,17 +49,24 @@ function ProjectsList() {
     );
 
   return (
-    <div className="flex flex-col container px-5 mx-4 border-slate-700 bg-stone-800 rounded-lg">
-      {[...data].map((project) => (
-        <Card key={project.id} className="max-w-sm">
-          <h5 className="text-2xl font-bold tracking-tight text-white">
-            {project.title}
-          </h5>
-          <p className="font-normal text-gray-400">
-            {project.description}
-          </p>
-        </Card>
-      ))}
+    <div className="flex flex-col container max-w-6xl py-4 mx-4 border-slate-700 bg-stone-800 rounded-lg">
+      <div className="flex flex-col items-end px-5 mb-4">
+        <Link href="/new-project">
+          <Button className="mt-4" gradientDuoTone="purpleToBlue">Create project</Button>
+        </Link>
+      </div>
+      <div className="flex flex-col container">
+        {[...data].map((project) => (
+          <Card key={project.id} className="container max-w-3xl mb-6 place-self-center bg-zinc-800 hover:bg-zinc-700">
+            <h5 className="text-2xl font-bold tracking-tight text-white">
+              {project.title}
+            </h5>
+            <p className="font-normal text-gray-400">
+              {project.description}
+            </p>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
