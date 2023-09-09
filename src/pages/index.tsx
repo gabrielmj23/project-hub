@@ -1,6 +1,6 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import Button from "~/components/Button";
+import { Button } from "flowbite-react"
 
 export default function Start() {
   const user = useUser();
@@ -20,7 +20,7 @@ export default function Start() {
           <p className="text-2xl text-white">
             Share project ideas, <b>build</b> your way out of junior
           </p>
-          {!user.isSignedIn &&  <Button classes="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"><SignInButton /></Button>}
+          {!user.isSignedIn &&  <Button gradientDuoTone="greenToBlue"><SignInButton /></Button>}
         </section>
         <div className="container flex">
           <section className="container flex flex-col items-center justify-center py-10">
