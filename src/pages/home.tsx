@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/nextjs";
-import { Card } from "flowbite-react";
+import { Button, Card, Spinner } from "flowbite-react";
 import Head from "next/head";
+import Link from "next/link";
 import Nav from "~/components/Nav";
 import { api } from "~/utils/api";
 
@@ -27,15 +28,23 @@ export default function Home() {
 
 function ProjectsList() {
   const {data, isLoading} = api.projects.getAll.useQuery();
-  if (!data) {
+  if (isLoading)
+    return <Spinner aria-label="Loading spinner" />
+    
+  if (!data)
     return <p>Something went wrong...</p>
-  }
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-  if (data.length === 0) {
-    return <p>No projects yet :^(</p>
-  }
+
+  if (data.length === 0)
+    return (
+      <>
+        <p>No projects yet :^(</p>
+        <p>Why not create one?</p>
+        <Link href="/new-project">
+          <Button className="mt-4" gradientDuoTone="purpleToBlue">Create project</Button>
+        </Link>
+      </>
+    );
+
   return (
     <div className="flex flex-col container px-5 mx-4 border-slate-700 bg-stone-800 rounded-lg">
       {[...data].map((project) => (

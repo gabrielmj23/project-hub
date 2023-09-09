@@ -1,5 +1,6 @@
 import { SignOutButton } from "@clerk/nextjs"
 import { Dropdown, Navbar } from "flowbite-react"
+import Image from "next/image"
 
 export default function Nav({ imageUrl, username }: { imageUrl: string, username: string }) {
   return (
@@ -10,7 +11,7 @@ export default function Nav({ imageUrl, username }: { imageUrl: string, username
       <div className="flex">
         <Dropdown 
           inline 
-          label={<img className="w-12 h-12 rounded-full" alt="User picture" src={imageUrl} />}
+          label={<Image width="48" height="48" className="w-12 h-12 rounded-full" alt="Your profile picture" src={imageUrl} />}
           className="bg-stone-800 border-slate-800"
         >
           <Dropdown.Header>
