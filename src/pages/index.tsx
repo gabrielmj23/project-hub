@@ -1,17 +1,16 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
-import Head from "next/head";
 import { Button } from "flowbite-react"
+import { useRouter } from "next/router";
 
 export default function Start() {
   const user = useUser();
+  const router = useRouter();
+  if (user.isSignedIn) {
+    void router.push("/home");
+  }
 
   return (
     <>
-      <Head>
-        <title>ProjectHub</title>
-        <meta name="description" content="Share project ideas, build your way out of junior" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <section className="container flex flex-col items-center justify-center gap-12 px-4 py-15">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">

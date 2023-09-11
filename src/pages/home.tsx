@@ -1,6 +1,5 @@
 import { useUser } from "@clerk/nextjs";
 import { Button, Card, Spinner } from "flowbite-react";
-import Head from "next/head";
 import Link from "next/link";
 import Nav from "~/components/Nav";
 import { api } from "~/utils/api";
@@ -13,11 +12,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>ProjectHub</title>
-        <meta name="description" content="Share project ideas, build your way out of junior" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Nav imageUrl={user.user.imageUrl} username={user.user.username ?? ""}/>
       <main className="flex min-h-screen flex-col items-center mt-16">
         <h1 className="text-4xl font-bold tracking-tight text-white mb-5">
@@ -57,14 +51,16 @@ function ProjectsList() {
       </div>
       <div className="flex flex-col container">
         {[...data].map((project) => (
-          <Card key={project.id} className="container max-w-3xl mb-6 place-self-center bg-zinc-800 hover:bg-zinc-700">
-            <h5 className="text-2xl font-bold tracking-tight text-white">
-              {project.title}
-            </h5>
-            <p className="font-normal text-gray-400">
-              {project.description}
-            </p>
-          </Card>
+          <Link key={project.id} href={`/projects/${project.id}`}  className="container max-w-3xl mb-6 place-self-center">
+            <Card className="bg-zinc-800 hover:bg-zinc-700">
+              <h5 className="text-2xl font-bold tracking-tight text-white">
+                {project.title}
+              </h5>
+              <p className="font-normal text-gray-400">
+                {project.description}
+              </p>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

@@ -15,12 +15,7 @@ export default function NewProject() {
   return (
     <>
       <Head>
-        <title>ProjectHub</title>
-        <meta
-          name="description"
-          content="Share project ideas, build your way out of junior"
-        />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Create a project idea</title>
       </Head>
       <Nav imageUrl={user.user.imageUrl} username={user.user.username ?? ""} />
       <main className="flex min-h-screen flex-col items-center justify-center">
