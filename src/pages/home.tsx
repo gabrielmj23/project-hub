@@ -1,7 +1,8 @@
 import { useUser } from "@clerk/nextjs";
-import { Button, Card, Spinner } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import Link from "next/link";
 import Nav from "~/components/Nav";
+import PostCard from "~/components/PostCard";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -49,18 +50,9 @@ function ProjectsList() {
           <Button className="mt-4" gradientDuoTone="purpleToBlue">Create project</Button>
         </Link>
       </div>
-      <div className="flex flex-col container">
+      <div className="flex flex-col container gap-6">
         {[...data].map((project) => (
-          <Link key={project.id} href={`/projects/${project.id}`}  className="container max-w-3xl mb-6 place-self-center">
-            <Card className="bg-zinc-800 hover:bg-zinc-700">
-              <h5 className="text-2xl font-bold tracking-tight text-white">
-                {project.title}
-              </h5>
-              <p className="font-normal text-gray-400">
-                {project.description}
-              </p>
-            </Card>
-          </Link>
+          <PostCard key={project.id} id={project.id} title={project.title} description={project.description} />
         ))}
       </div>
     </div>

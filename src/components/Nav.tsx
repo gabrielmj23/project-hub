@@ -1,6 +1,7 @@
 import { SignOutButton } from "@clerk/nextjs"
 import { Dropdown, Navbar } from "flowbite-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Nav({ imageUrl, username }: { imageUrl: string, username: string }) {
   return (
@@ -17,9 +18,12 @@ export default function Nav({ imageUrl, username }: { imageUrl: string, username
           <Dropdown.Header>
             <span className="block truncate text-sm text-slate-100 font-semibold">{username}</span>
           </Dropdown.Header>
-          <Dropdown.Item className="text-slate-100 hover:text-stone-800">Profile</Dropdown.Item>
-          <Dropdown.Item className="text-slate-100 hover:text-stone-800">Settings</Dropdown.Item>
-          <Dropdown.Item className="text-red-700"><SignOutButton /></Dropdown.Item>
+          <Dropdown.Item className="text-slate-100 hover:text-stone-800">
+            <Link href={`/users/${username}`}>Profile</Link>
+          </Dropdown.Item>
+          <Dropdown.Item className="text-red-700">
+            <SignOutButton />
+          </Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
       </div>

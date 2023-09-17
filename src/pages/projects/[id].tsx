@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Spinner } from "flowbite-react";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Nav from "~/components/Nav";
 import { api } from "~/utils/api";
@@ -44,7 +45,10 @@ export default function ProjectView() {
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="my-8 flex h-1/2 w-4/5 flex-col gap-2 items-center justify-center rounded-lg bg-stone-800 px-8 py-4 text-white">
           <h1 className="text-4xl font-bold">{project.title}</h1>
-          <p className="text-gray-400 text-md">{`Posted by ${author.username ?? ""}`}</p>
+          <span className="flex flex-row gap-1">
+            <p className="text-gray-400 text-md">Posted by</p>
+            <Link className="text-gray-300 hover:text-gray-200 tex-md" href={`/users/${author.username}`}>{author.username}</Link>
+          </span>
           <p className="text-gray-400 text-md">
             {`Created: ${project.createdAt.toDateString()} - Last updated: ${project.updatedAt.toDateString()}`}
           </p>

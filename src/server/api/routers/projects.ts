@@ -39,6 +39,25 @@ export const projectsRouter = createTRPCRouter({
       };
   }),
 
+  getByAuthorId: privateProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const projects = await ctx.prisma.project.findMany({
+        take: 50,
+        where: {
+          authorId: input
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      return projects.filter((project) => ({
+        id: project.id,
+        title: project.title,
+        description: project.description,
+      }));
+    }),
+
   create: privateProcedure
     .input(
       z.object({
