@@ -20,6 +20,9 @@ export const projectsRouter = createTRPCRouter({
       const project = await ctx.prisma.project.findUnique({
         where: {
           id: input
+        },
+        include: {
+          tags: true
         }
       });
       if (!project)
@@ -65,7 +68,12 @@ export const projectsRouter = createTRPCRouter({
         description: z.string().trim().min(1).max(255),
         requirements: z.string().trim().min(1).max(255),
         suggestions: z.string().trim().min(1).max(255),
-        additional: z.string().optional()
+        additional: z.string().optional(),
+        tags: z.array(z.object({
+          id: z.string(),
+          name: z.string(),
+          type: z.string(),
+        })),
       }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
@@ -79,9 +87,12 @@ export const projectsRouter = createTRPCRouter({
       const project = await ctx.prisma.project.create({
         data: {
           authorId,
-          ...input
+          ...input,
+          tags: {
+            connect: input.tags.map(tag => ({ id: tag.id }))
+          }
         }
-      })
+      });
 
       return project;
     })

@@ -1,8 +1,9 @@
 import { useUser } from "@clerk/nextjs";
+import { type Tag } from "@prisma/client";
 import { Button } from "flowbite-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import React, { useState } from "react";
 import Nav from "~/components/Nav";
 import { api } from "~/utils/api";
 
@@ -31,17 +32,42 @@ export default function NewProject() {
 
 function ProjectForm() {
   // Form state
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [requirements, setRequirements] = useState("");
-  const [suggestions, setSuggestions] = useState("");
-  const [additional, setAdditional] = useState("");
+  const [project, setProject] = useState({
+    title: "",
+    description: "",
+    requirements: "",
+    suggestions: "",
+    additional: "",
+    tags: [] as Tag[],
+  });
+  const [tagsVisible, setTagsVisible] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    e.preventDefault();
+    setProject({
+      ...project,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const router = useRouter();
+  const tagsList = api.tags.getAll.useQuery().data;
+  const groupedTags: Record<string, Tag[]> = {};
+  if (tagsList) {
+    tagsList.forEach((tag) => {
+      if (groupedTags[tag.type]) {
+        groupedTags[tag.type]?.push(tag);
+      } else {
+        groupedTags[tag.type] = [tag];
+      }
+    });
+  }
   const { mutate, isLoading } = api.projects.create.useMutation({
     onSuccess: async () => {
       await router.push("/home");
-    }
+    },
   });
 
   return (
@@ -49,7 +75,7 @@ function ProjectForm() {
       className="flex h-1/2 w-full flex-col items-start justify-start"
       onSubmit={(e) => {
         e.preventDefault();
-        mutate({ title, description, requirements, suggestions, additional });
+        mutate(project);
       }}
     >
       <fieldset className="mb-7 flex w-full flex-col gap-2">
@@ -61,11 +87,11 @@ function ProjectForm() {
           autoComplete="false"
           disabled={isLoading}
           type="text"
-          value={title}
+          value={project.title}
           name="title"
           id="title"
           className="h-8 w-full rounded-lg bg-stone-800 py-3 text-white"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleChange}
         />
       </fieldset>
       <fieldset className="mb-7 flex w-full flex-col gap-2">
@@ -76,11 +102,11 @@ function ProjectForm() {
           required
           autoComplete="false"
           disabled={isLoading}
-          value={description}
+          value={project.description}
           name="description"
           id="description"
           className="h-28 w-full rounded-lg bg-stone-800 py-3 text-white"
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleChange}
         />
       </fieldset>
       <fieldset className="mb-7 flex w-full flex-col gap-2">
@@ -91,11 +117,11 @@ function ProjectForm() {
           required
           autoComplete="false"
           disabled={isLoading}
-          value={requirements}
+          value={project.requirements}
           name="requirements"
           id="requirements"
           className="h-28 w-full rounded-lg bg-stone-800 py-3 text-white"
-          onChange={(e) => setRequirements(e.target.value)}
+          onChange={handleChange}
         />
       </fieldset>
       <fieldset className="mb-7 flex w-full flex-col gap-2">
@@ -106,11 +132,11 @@ function ProjectForm() {
           required
           autoComplete="false"
           disabled={isLoading}
-          value={suggestions}
+          value={project.suggestions}
           name="suggestions"
           id="suggestions"
           className="h-28 w-full rounded-lg bg-stone-800 py-3 text-white"
-          onChange={(e) => setSuggestions(e.target.value)}
+          onChange={handleChange}
         />
       </fieldset>
       <fieldset className="mb-7 flex w-full flex-col gap-2">
@@ -120,14 +146,67 @@ function ProjectForm() {
         <textarea
           autoComplete="false"
           disabled={isLoading}
-          value={additional}
+          value={project.additional}
           name="additional"
           id="additional"
           className="h-28 w-full rounded-lg bg-stone-800 py-3 text-white"
-          onChange={(e) => setAdditional(e.target.value)}
+          onChange={handleChange}
         />
       </fieldset>
-      <Button type="submit" disabled={isLoading} gradientDuoTone="purpleToBlue" className="mx-auto">
+      <fieldset className="mb-7 flex w-full flex-col gap-2">
+        <div className="flex flex-row items-center gap-3">
+          <label htmlFor="addTags" className="text-2xl font-semibold">
+            Add tags
+          </label>
+          <input
+            className="rounded"
+            type="checkbox"
+            id="addTags"
+            name="addTags"
+            onChange={(_) => setTagsVisible(!tagsVisible)}
+          />
+        </div>
+        {Object.entries(groupedTags).map(([type, tags]) => (
+          <div
+            key={type}
+            className={`flex flex-col gap-3 ${tagsVisible ? "" : "hidden"}`}
+          >
+            <p className="text-lg">{type}</p>
+            <div className="grid grid-cols-5 gap-4">
+              {tags.map((tag) => (
+                <div key={tag.id} className="flex flex-row items-center gap-3">
+                  <input
+                    className="rounded"
+                    type="checkbox"
+                    id={tag.id}
+                    name={tag.id}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setProject({
+                          ...project,
+                          tags: [...project.tags, tag],
+                        });
+                      } else {
+                        setProject({
+                          ...project,
+                          tags: project.tags.filter((t) => t !== tag),
+                        });
+                      }
+                    }}
+                  />
+                  <label htmlFor={tag.id}>{tag.name}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </fieldset>
+      <Button
+        type="submit"
+        disabled={isLoading}
+        gradientDuoTone="purpleToBlue"
+        className="mx-auto"
+      >
         Submit
       </Button>
     </form>
